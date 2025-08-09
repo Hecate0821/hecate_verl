@@ -41,7 +41,7 @@ class KLControlConfig(BaseConfig):
 
 @dataclass
 class FilterGroupsConfig(BaseConfig):
-    """Configuration for filter groups (used in DAPO and Entropy).
+    """Configuration for filter groups (used in DAPO and Entropy) and dynamic filtering.
 
     The inheritance from BaseConfig provides omegaconf.DictConfig-like interface for a dataclass config.
 
@@ -52,8 +52,8 @@ class FilterGroupsConfig(BaseConfig):
     """
 
     enable: bool = False
-    metric: Optional[str] = None
-    max_num_gen_batches: int = 0
+    metric: Optional[str] = "seq_reward"
+    max_num_gen_batches: int = 5
 
 
 @dataclass
@@ -73,6 +73,7 @@ class AlgoConfig(BaseConfig):
         use_pf_ppo (bool): Whether to enable preference feedback PPO.
         pf_ppo (dict[str, Any]): Preference feedback PPO settings.
         filter_groups (Optional[FilterGroupsConfig]): Filter groups configuration, used in DAPO and Entropy
+        dynamic_filter (FilterGroupsConfig): Dynamic filter configuration for batch filtering based on reward variance
     """
 
     gamma: float = 1.0
@@ -85,3 +86,4 @@ class AlgoConfig(BaseConfig):
     use_pf_ppo: bool = False
     pf_ppo: dict[str, Any] = field(default_factory=dict)
     filter_groups: Optional[FilterGroupsConfig] = None
+    dynamic_filter: FilterGroupsConfig = field(default_factory=FilterGroupsConfig)
